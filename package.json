@@ -1,29 +1,51 @@
 {
-  "name": "spreadsheet-mcp",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@zephyr-mcp/spreadsheet",
+  "version": "0.0.1",
+  "description": "MCP Server for spreadsheet operations",
+  "main": "dist/server.cjs",
+  "type": "module",
+  "bin": {
+    "spreadsheet-mcp": "dist/server.cjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts",
-    "build": "tsc",
+    "start": "node dist/server.cjs",
+    "build": "vite build -c vite.config.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "echo '可根据需要集成 eslint 或其他工具'"
+    "lint": "echo '可根据需要集成 eslint 或其他工具'",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "release": "release-it"
   },
-  "keywords": [],
+  "keywords": [
+    "mcp",
+    "spreadsheet",
+    "excel",
+    "csv"
+  ],
   "author": "Zephyr",
   "license": "MIT",
-  "description": "",
   "dependencies": {
     "exceljs": "^4.4.0",
     "fastmcp": "1.21.0",
     "papaparse": "5.5.2",
-    "xlsx": "0.18.5",
     "zod": "3.24.2"
   },
   "devDependencies": {
     "@types/node": "22.14.0",
     "@types/papaparse": "5.3.15",
+    "@vitest/coverage-v8": "^2.0.4",
     "tsx": "4.19.3",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vite": "^5.4.2",
+    "vitest": "^2.0.4",
+    "release-it": "^17.6.0",
+    "@release-it/conventional-changelog": "^8.0.1"
   }
 }
