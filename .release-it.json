@@ -3,23 +3,25 @@
     "commitMessage": "chore(release): release v${version}",
     "tagName": "v${version}",
     "push": true,
-    "requireCleanWorkingDir": true // 确保工作区干净
+    "requireCleanWorkingDir": true
   },
   "npm": {
-    "publish": true // 发布到 npm
+    "publish": true,
+    "publishConfig": {
+      "access": "public"
+    }
   },
   "github": {
-    "release": true, // 创建 GitHub Release
+    "release": true,
     "releaseName": "Release v${version}"
   },
   "plugins": {
     "@release-it/conventional-changelog": {
-      "preset": "angular", // 使用 angular 预设生成 changelog
-      "infile": "CHANGELOG.md" // 更新的文件
+      "preset": "angular",
+      "infile": "CHANGELOG.md"
     }
   },
   "hooks": {
-    // 在版本确定后、发布前执行
     "before:init": ["npm run test", "npm run build"]
   }
 }
