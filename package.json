@@ -47,5 +47,8 @@
     "vitest": "^2.0.4",
     "release-it": "^17.6.0",
     "@release-it/conventional-changelog": "^8.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
