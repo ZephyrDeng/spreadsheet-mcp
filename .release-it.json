@@ -1,0 +1,27 @@
+{
+  "git": {
+    "commitMessage": "chore(release): release v${version}",
+    "tagName": "v${version}",
+    "push": true,
+    "requireCleanWorkingDir": true
+  },
+  "npm": {
+    "publish": true,
+    "publishConfig": {
+      "access": "public"
+    }
+  },
+  "github": {
+    "release": true,
+    "releaseName": "Release v${version}"
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "angular",
+      "infile": "CHANGELOG.md"
+    }
+  },
+  "hooks": {
+    "before:init": ["npm run test", "npm run build"]
+  }
+}

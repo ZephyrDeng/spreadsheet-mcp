@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ] # 或者你的主分支名称
+  pull_request:
+    branches: [ main ] # 或者你的主分支名称
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x' # 指定 Node.js 18.x
+          cache: 'npm' # 缓存 npm 依赖
+
+      - name: Install dependencies
+        run: npm ci # 使用 ci 更快更可靠
+
+      # - name: Lint code # 如果配置了 lint 脚本，取消注释此步骤
+      #   run: npm run lint
+
+      - name: Run tests
+        run: npm test # 这会运行 vitest run --coverage
+
+      - name: Build project
+        run: npm run build # 这会运行 vite build

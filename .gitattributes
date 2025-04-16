@@ -1,0 +1,22 @@
+# Ensure consistent line endings and text file handling
+* text=auto
+
+# Mark TypeScript source files as text
+*.ts text
+
+# Treat Markdown and documentation as text
+*.md text
+
+# Exclude binary files from diff
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg text
+
+# Handle CSV/XLSX as text for diff (optional)
+*.csv text
+*.xlsx text
+
+# Set UTF-8 encoding for all text files
+*.* text eol=lf
