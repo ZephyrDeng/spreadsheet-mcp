@@ -1,5 +1,12 @@
 
 
+## [0.1.2](https://github.com/ZephyrDeng/spreadsheet-mcp/compare/v0.1.1...v0.1.2) (2025-04-17)
+
+
+### Bug Fixes
+
+* Resolve TS errors and enhance spreadsheet cell parsing ([1197cbf](https://github.com/ZephyrDeng/spreadsheet-mcp/commit/1197cbf545b5d0c0a90e18e96f35a9f3dfe8d5b5))
+
 ## 0.1.1 (2025-04-16)
 
 # 0.1.0 (2025-04-15)
