@@ -26,11 +26,11 @@ server.addTool({
   }),
   async execute(args) {
     try {
-      const info = getFileInfo(args.filePath); // 先获取文件信息
+      const info = await getFileInfo(args.filePath); // 先获取文件信息
       const requestedRows = args.rows ?? 10; // 获取请求的行数或默认值
       // 计算实际预览行数，不超过总行数
       const actualRows = Math.min(requestedRows, info.rowCount);
-      const preview = getPreview(args.filePath, actualRows); // 使用实际行数获取预览
+      const preview = await getPreview(args.filePath, actualRows); // 使用实际行数获取预览
       const md = formatToMarkdownTable(preview.headers, preview.data);
       // 返回信息保持不变，显示总行数
       return `**文件信息**：共 ${info.rowCount} 行，${info.colCount} 列。\n\n${md}`;
@@ -54,7 +54,7 @@ server.addTool({
   async execute(args) {
     try {
       const rows = args.rows ?? 10;
-      const filtered = filterData(args.filePath, args.column, args.operator, args.value, rows);
+      const filtered = await filterData(args.filePath, args.column, args.operator, args.value, rows);
       const md = formatToMarkdownTable(filtered.headers, filtered.data);
       return md;
     } catch (e: any) {
@@ -77,7 +77,7 @@ server.addTool({
     try {
       const rows = args.rows ?? 10;
       const order = args.order ?? "asc";
-      const sorted = sortData(args.filePath, args.column, order, rows);
+      const sorted = await sortData(args.filePath, args.column, order, rows);
       const md = formatToMarkdownTable(sorted.headers, sorted.data);
       return md;
     } catch (e: any) {

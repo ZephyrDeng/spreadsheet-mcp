@@ -65,8 +65,28 @@ export async function parseSpreadsheet(filePath: string): Promise<{ headers: str
                             rowData[header] = cellValue.result ?? ''; // 公式结果
                         } else if (cellValue && typeof cellValue === 'object' && 'richText' in cellValue) {
                             rowData[header] = (cellValue.richText as any[]).map(rt => rt.text).join(''); // 富文本
+                        } else if (cellValue instanceof Date) {
+                            // 格式化日期对象为 ISO 字符串
+                            rowData[header] = cellValue.toISOString();
+                        } else if (cellValue instanceof Error) {
+                            // 提取错误信息
+                            rowData[header] = cellValue.message;
+                        } else if (typeof cellValue === 'object' && cellValue !== null && 'hyperlink' in cellValue && 'text' in cellValue) {
+                            // 处理 Hyperlink 对象，格式化为 Markdown 链接
+                            const link = (cellValue as ExcelJS.CellHyperlinkValue).hyperlink;
+                            const text = (cellValue as ExcelJS.CellHyperlinkValue).text || link; // 如果没有文本，使用链接作为文本
+                            // 确保文本和链接不为空
+                            if (link) {
+                                rowData[header] = `[${String(text).replace(/\|/g, '\\|')}](${link})`; // 转义文本中的 |
+                            } else {
+                                rowData[header] = String(text).replace(/\|/g, '\\|'); // 只有文本，转义 |
+                            }
+                        } else if (typeof cellValue === 'boolean') {
+                            // 将布尔值转换为大写字符串
+                            rowData[header] = cellValue ? 'TRUE' : 'FALSE';
                         } else {
-                            rowData[header] = cellValue ?? ''; // 其他值或空字符串
+                            // 对于其他所有情况（包括 number, string, null, undefined）
+                            rowData[header] = cellValue ?? '';
                         }
                     });
                      // 只有包含实际数据的行才添加
@@ -177,7 +197,7 @@ export function formatToMarkdownTable(headers: string[], data: Record<string, an
     const headerRow = "| " + headers.join(" | ") + " |";
     const sepRow = "| " + headers.map(() => "---").join(" | ") + " |";
     const dataRows = data.map(row =>
-        "| " + headers.map(h => String(row[h] ?? "")).join(" | ") + " |" // 保持 null/undefined 转为空字符串
+        "| " + headers.map(h => String(row[h] ?? "").replace(/\|/g, '\\|')).join(" | ") + " |" // 转义 | 并保持 null/undefined 转为空字符串
     );
     return [headerRow, sepRow, ...dataRows].join("\n");
 }
