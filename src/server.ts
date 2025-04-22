@@ -6,7 +6,7 @@ import {
   getPreview,
   filterData,
   sortData,
-  formatToMarkdownTable,
+  formatToJsonArray, // 修改：导入 formatToJsonArray
   addSheetToXlsx,
 } from "./spreadsheetUtils";
 
@@ -16,24 +16,31 @@ const server = new FastMCP({
   version: "1.0.0",
 });
 
+function llmInputRowToTableRow(rows: number) {
+  return rows - 1 < 0 ? 0 : rows - 1;
+}
+
 // 工具 1：查看表格信息和预览
 server.addTool({
   name: "view_spreadsheet",
-  description: "查看表格信息和预览前 N 行",
+  description: "查看表格信息和预览前 N 行，以包含二维数组的 JSON 字符串形式返回",
   parameters: z.object({
     filePath: z.string(),
-    rows: z.number().int().min(1).optional(), // 移除 max(100) 限制
+    rows: z.number().int().min(0).optional(),
   }),
   async execute(args) {
     try {
       const info = await getFileInfo(args.filePath); // 先获取文件信息
-      const requestedRows = args.rows ?? 10; // 获取请求的行数或默认值
+      const requestedRows = llmInputRowToTableRow(args.rows ?? 10); // 获取请求的行数或默认值
       // 计算实际预览行数，不超过总行数
       const actualRows = Math.min(requestedRows, info.rowCount);
       const preview = await getPreview(args.filePath, actualRows); // 使用实际行数获取预览
-      const md = formatToMarkdownTable(preview.headers, preview.data);
-      // 返回信息保持不变，显示总行数
-      return `**文件信息**：共 ${info.rowCount} 行，${info.colCount} 列。\n\n${md}`;
+      const jsonData = formatToJsonArray(preview.headers, preview.data); // 调用 formatToJsonArray
+      // 修改：将结果对象转换为 JSON 字符串返回
+      return JSON.stringify({
+        fileInfo: `共 ${info.rowCount} 行，${info.colCount} 列。`,
+        previewData: jsonData
+      }, null, 2); // 使用 null, 2 进行格式化，使其更易读
     } catch (e: any) {
       throw new UserError(e.message || "读取表格失败");
     }
@@ -43,20 +50,27 @@ server.addTool({
 // 工具 2：筛选
 server.addTool({
   name: "filter_spreadsheet",
-  description: "按条件筛选表格数据",
+  description: "按条件筛选表格数据，以包含二维数组的 JSON 字符串形式返回",
   parameters: z.object({
     filePath: z.string(),
     column: z.string(),
     operator: z.enum(["eq", "neq", "gt", "lt", "gte", "lte", "contains"]),
     value: z.union([z.string(), z.number()]),
-    rows: z.number().int().min(1).max(100).optional(),
+    rows: z.number().int().min(0).optional(),
   }),
   async execute(args) {
     try {
-      const rows = args.rows ?? 10;
+      let llmInputRow = args.rows;
+
+      if (!llmInputRow) {
+        const info = await getFileInfo(args.filePath);
+        llmInputRow = info.rowCount;
+      }
+
+      const rows = llmInputRowToTableRow(llmInputRow);
       const filtered = await filterData(args.filePath, args.column, args.operator, args.value, rows);
-      const md = formatToMarkdownTable(filtered.headers, filtered.data);
-      return md;
+      const jsonData = formatToJsonArray(filtered.headers, filtered.data); // 调用 formatToJsonArray
+      return JSON.stringify(jsonData); // 修改：将 JSON 数组转换为字符串返回
     } catch (e: any) {
       throw new UserError(e.message || "筛选失败");
     }
@@ -66,20 +80,27 @@ server.addTool({
 // 工具 3：排序
 server.addTool({
   name: "sort_spreadsheet",
-  description: "按列排序表格数据",
+  description: "按列排序表格数据，以包含二维数组的 JSON 字符串形式返回",
   parameters: z.object({
     filePath: z.string(),
     column: z.string(),
     order: z.enum(["asc", "desc"]).optional(),
-    rows: z.number().int().min(1).max(100).optional(),
+    rows: z.number().int().optional(),
   }),
   async execute(args) {
     try {
-      const rows = args.rows ?? 10;
+      let llmInputRow = args.rows;
+
+      if (!llmInputRow) {
+        const info = await getFileInfo(args.filePath);
+        llmInputRow = info.rowCount;
+      }
+
+      const rows = llmInputRowToTableRow(llmInputRow);
       const order = args.order ?? "asc";
       const sorted = await sortData(args.filePath, args.column, order, rows);
-      const md = formatToMarkdownTable(sorted.headers, sorted.data);
-      return md;
+      const jsonData = formatToJsonArray(sorted.headers, sorted.data); // 调用 formatToJsonArray
+      return JSON.stringify(jsonData); // 修改：将 JSON 数组转换为字符串返回
     } catch (e: any) {
       throw new UserError(e.message || "排序失败");
     }

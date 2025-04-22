@@ -190,16 +190,33 @@ export async function sortData(
 }
 
 /**
- * 将数据格式化为 Markdown 表格字符串 (保持同步)
+ * 将数据格式化为二维数组 JSON 结构
  */
-export function formatToMarkdownTable(headers: string[], data: Record<string, any>[]): string {
-    if (headers.length === 0) return "（无数据）";
-    const headerRow = "| " + headers.join(" | ") + " |";
-    const sepRow = "| " + headers.map(() => "---").join(" | ") + " |";
-    const dataRows = data.map(row =>
-        "| " + headers.map(h => String(row[h] ?? "").replace(/\|/g, '\\|')).join(" | ") + " |" // 转义 | 并保持 null/undefined 转为空字符串
-    );
-    return [headerRow, sepRow, ...dataRows].join("\n");
+export function formatToJsonArray(headers: string[], data: Record<string, any>[]): any[][] {
+    if (headers.length === 0 && data.length === 0) return []; // 如果都没有，返回空数组
+    const result: any[][] = [];
+    // 添加表头行
+    const actualHeaders = headers.length > 0 ? headers : (data.length > 0 ? Object.keys(data[0]) : []);
+    if (actualHeaders.length > 0) {
+        result.push(actualHeaders);
+    }
+
+    // 添加数据行
+    data.forEach(row => {
+        // 使用 actualHeaders 保证顺序和列数一致
+        const rowValues = actualHeaders.map(header => {
+            const value = row[header];
+            // 确保 Hyperlink 对象被正确处理为文本或链接
+            if (typeof value === 'object' && value !== null && 'hyperlink' in value && 'text' in value) {
+                return (value as ExcelJS.CellHyperlinkValue).text || (value as ExcelJS.CellHyperlinkValue).hyperlink;
+            }
+            // 其他类型直接返回值，null/undefined 转为空字符串
+            return value ?? '';
+        });
+        result.push(rowValues);
+    });
+
+    return result;
 }
 
 
