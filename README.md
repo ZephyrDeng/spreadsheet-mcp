@@ -12,7 +12,7 @@
 - 按列排序行 (升序/降序)
 - 向现有 XLSX 文件添加新工作表或创建新文件
 - 支持 CSV 和 XLSX 文件
-- 以 Markdown 表格形式返回结果 (用于查看/筛选/排序)
+- 以包含二维数组的 JSON 字符串形式返回结果 (用于查看/筛选/排序)
 - 技术栈：TypeScript, fastmcp, papaparse, xlsx, zod
 
 ## 安装与使用
@@ -140,9 +140,9 @@ npm run test:watch
 
 ## 示例工具
 
-- `view_spreadsheet`: 查看文件信息并预览行
-- `filter_spreadsheet`: 按列和条件筛选行
-- `sort_spreadsheet`: 按列排序行
+- `view_spreadsheet`: 查看文件信息并预览指定行数。返回包含文件信息和预览数据（二维数组）的 JSON 字符串。`rows` 参数指定预览行数（0 表示仅表头，默认为 10，无最大限制）。
+- `filter_spreadsheet`: 按列和条件筛选行。返回包含筛选结果（二维数组）的 JSON 字符串。`rows` 参数指定返回的最大行数（默认为所有匹配行，无最大限制）。
+- `sort_spreadsheet`: 按列排序行。返回包含排序结果（二维数组）的 JSON 字符串。`rows` 参数指定返回的最大行数（默认为所有行，无最大限制）。
 - `update_spreadsheet_with_new_sheet`: 将数据写入 XLSX 文件的新工作表
 
 ## 许可证

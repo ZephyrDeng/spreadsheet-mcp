@@ -2,10 +2,10 @@
   "name": "@zephyr-mcp/spreadsheet",
   "version": "0.1.2",
   "description": "MCP Server for spreadsheet operations",
-  "main": "dist/server.cjs",
+  "main": "dist/server.js",
   "type": "module",
   "bin": {
-    "spreadsheet-mcp": "dist/server.cjs"
+    "spreadsheet-mcp": "dist/server.js"
   },
   "files": [
     "dist",
@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "start": "node dist/server.cjs",
+    "start": "node dist/server.js",
     "build": "vite build -c vite.config.ts",
     "typecheck": "tsc --noEmit",
     "lint": "echo '可根据需要集成 eslint 或其他工具'",

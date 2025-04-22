@@ -12,7 +12,7 @@ A TypeScript-based Model Context Protocol (MCP) server for viewing, filtering, s
 - Sort rows by column (ascending/descending)
 - Add new sheets to existing XLSX files or create new ones
 - Supports both CSV and XLSX files
-- Returns results as Markdown tables (for viewing/filtering/sorting)
+- Returns results as a JSON string containing a 2D array (for viewing/filtering/sorting)
 - TypeScript, fastmcp, papaparse, xlsx, zod
 
 ## Installation & Usage
@@ -140,9 +140,9 @@ Contributions are welcome! Please follow these guidelines:
 
 ## Example Tools
 
-- `view_spreadsheet`: View file info and preview rows
-- `filter_spreadsheet`: Filter rows by column and condition
-- `sort_spreadsheet`: Sort rows by column
+- `view_spreadsheet`: View file info and preview a specified number of rows. Returns a JSON string containing file info and preview data (2D array). The `rows` parameter specifies the number of rows to preview (0 for headers only, defaults to 10, no max limit).
+- `filter_spreadsheet`: Filter rows by column and condition. Returns a JSON string containing the filtered results (2D array). The `rows` parameter specifies the maximum number of rows to return (defaults to all matching rows, no max limit).
+- `sort_spreadsheet`: Sort rows by column. Returns a JSON string containing the sorted results (2D array). The `rows` parameter specifies the maximum number of rows to return (defaults to all rows, no max limit).
 - `update_spreadsheet_with_new_sheet`: Write data to a new sheet in an XLSX file
 
 ## License
