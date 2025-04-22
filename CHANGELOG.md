@@ -1,5 +1,12 @@
 
 
+## [1.0.1](https://github.com/ZephyrDeng/spreadsheet-mcp/compare/v1.0.0...v1.0.1) (2025-04-22)
+
+
+### Bug Fixes
+
+* remove JSON formatting for output in server tool ([a08afaa](https://github.com/ZephyrDeng/spreadsheet-mcp/commit/a08afaa5ed7962ee3f0e0db5747fcd9714ffee98))
+
 # [1.0.0](https://github.com/ZephyrDeng/spreadsheet-mcp/compare/v0.1.2...v1.0.0) (2025-04-22)
 
 

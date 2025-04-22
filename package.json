@@ -1,6 +1,6 @@
 {
   "name": "@zephyr-mcp/spreadsheet",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP Server for spreadsheet operations",
   "main": "dist/server.js",
   "type": "module",
