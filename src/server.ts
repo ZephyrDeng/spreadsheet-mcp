@@ -40,7 +40,7 @@ server.addTool({
       return JSON.stringify({
         fileInfo: `共 ${info.rowCount} 行，${info.colCount} 列。`,
         previewData: jsonData
-      }, null, 2); // 使用 null, 2 进行格式化，使其更易读
+      });
     } catch (e: any) {
       throw new UserError(e.message || "读取表格失败");
     }
