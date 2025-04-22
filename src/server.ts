@@ -26,7 +26,7 @@ server.addTool({
   description: "查看表格信息和预览前 N 行",
   parameters: z.object({
     filePath: z.string(),
-    rows: z.number().int().min(0).max(100).optional(),
+    rows: z.number().int().min(0).optional(),
   }),
   async execute(args) {
     try {
