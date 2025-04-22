@@ -16,18 +16,22 @@ const server = new FastMCP({
   version: "1.0.0",
 });
 
+function llmInputRowToTableRow(rows: number) {
+  return rows - 1 < 0 ? 0 : rows - 1;
+}
+
 // 工具 1：查看表格信息和预览
 server.addTool({
   name: "view_spreadsheet",
   description: "查看表格信息和预览前 N 行",
   parameters: z.object({
     filePath: z.string(),
-    rows: z.number().int().min(1).optional(), // 移除 max(100) 限制
+    rows: z.number().int().min(0).max(100).optional(),
   }),
   async execute(args) {
     try {
       const info = await getFileInfo(args.filePath); // 先获取文件信息
-      const requestedRows = args.rows ?? 10; // 获取请求的行数或默认值
+      const requestedRows = llmInputRowToTableRow(args.rows ?? 10); // 获取请求的行数或默认值
       // 计算实际预览行数，不超过总行数
       const actualRows = Math.min(requestedRows, info.rowCount);
       const preview = await getPreview(args.filePath, actualRows); // 使用实际行数获取预览
@@ -49,11 +53,18 @@ server.addTool({
     column: z.string(),
     operator: z.enum(["eq", "neq", "gt", "lt", "gte", "lte", "contains"]),
     value: z.union([z.string(), z.number()]),
-    rows: z.number().int().min(1).max(100).optional(),
+    rows: z.number().int().min(0).optional(),
   }),
   async execute(args) {
     try {
-      const rows = args.rows ?? 10;
+      let llmInputRow = args.rows;
+
+      if (!llmInputRow) {
+        const info = await getFileInfo(args.filePath);
+        llmInputRow = info.rowCount;
+      }
+
+      const rows = llmInputRowToTableRow(llmInputRow);
       const filtered = await filterData(args.filePath, args.column, args.operator, args.value, rows);
       const md = formatToMarkdownTable(filtered.headers, filtered.data);
       return md;
@@ -71,11 +82,18 @@ server.addTool({
     filePath: z.string(),
     column: z.string(),
     order: z.enum(["asc", "desc"]).optional(),
-    rows: z.number().int().min(1).max(100).optional(),
+    rows: z.number().int().optional(),
   }),
   async execute(args) {
     try {
-      const rows = args.rows ?? 10;
+      let llmInputRow = args.rows;
+
+      if (!llmInputRow) {
+        const info = await getFileInfo(args.filePath);
+        llmInputRow = info.rowCount;
+      }
+
+      const rows = llmInputRowToTableRow(llmInputRow);
       const order = args.order ?? "asc";
       const sorted = await sortData(args.filePath, args.column, order, rows);
       const md = formatToMarkdownTable(sorted.headers, sorted.data);
