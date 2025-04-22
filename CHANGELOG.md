@@ -1,5 +1,22 @@
 
 
+# [1.0.0](https://github.com/ZephyrDeng/spreadsheet-mcp/compare/v0.1.2...v1.0.0) (2025-04-22)
+
+
+### Bug Fixes
+
+* Change output to JSON, fix tests, update docs ([5553045](https://github.com/ZephyrDeng/spreadsheet-mcp/commit/5553045ebe8cb0ca0aba7b5b75b53cb8e5a91116))
+
+
+### Features
+
+* **spreadsheet:** Change spreadsheet tool output format to JSON array ([20fe9a6](https://github.com/ZephyrDeng/spreadsheet-mcp/commit/20fe9a6ad97e1ffd11027edfe20a95aaa2a1d657))
+
+
+### BREAKING CHANGES
+
+* **spreadsheet:** The output format of view_spreadsheet, filter_spreadsheet, and sort_spreadsheet tools has changed from a Markdown string to a JSON string. Clients relying on the old format need to be updated.
+
 ## [0.1.2](https://github.com/ZephyrDeng/spreadsheet-mcp/compare/v0.1.1...v0.1.2) (2025-04-17)
 
 
